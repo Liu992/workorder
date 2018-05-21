@@ -1,0 +1,148 @@
+html {
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+html, body, ul, li, p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  padding: 0;
+}
+ul,li {
+  list-style: none;
+}
+[v-cloak] {
+  display: none;
+}
+i{font-style:normal;}
+.theme-fontColor {
+  color: #1890FF;
+}
+.warn-fontColor {
+  color:#F08802
+}
+.font-weight-500 {
+  font-weight: 500;
+}
+.theme-bgColor {
+  background-color:#F08802;
+}
+.fontcolor-opocity-87 {
+  color:rgba(0,0,0,0.87);
+}
+
+.fontcolor-opocity-38 {
+  color:rgba(0,0,0,0.38);
+}
+
+.fontcolor-opocity-54 {
+  color:rgba(0,0,0,0.54);
+}
+.fontSize-16 {
+  font-size: 16px;
+}
+.fontSize-14 {
+  font-size: 14px;
+}
+.fontSize-12 {
+  font-size: 12px;
+}
+.font-size20 {
+  font-size: 20px;
+}
+.fonSize-24 {
+  font-size: 24px;
+}
+.fontSize-38 {
+  font-size: 38px;
+}
+.text-center {
+  text-align:center;
+}
+.line-height-20 {
+  line-height: 20px;
+}
+.line-height-22 {
+  line-height: 22px;
+}
+.line-height-32 {
+  line-height: 32px;
+}
+.border-1px-themeColor{
+  border:1px solid #F08802;
+}
+.line-height-46 {
+  line-height: 46px;
+}
+.flex {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.flex-v {
+  -webkit-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.flex-1 {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.flex-align-center {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.flex-pack-center {
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.flex-pack-justify {
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+.transform-vertical-horizontal {
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  -moz-transform: translate(-50%,-50%);
+  -o-transform: translate(-50%,-50%);
+}
+.error_warn {
+  margin-left: 85px;
+  padding-bottom: 10px;
+  color: #F5222D ;
+  font-size: 14px;
+}
+.color-red {
+  color: rgba(245,34,45,0.87)
+}
+.paddingT-8 {
+  padding-top: 8px;
+}
+.paddingT-16 {
+  padding-top: 16px;
+}
+.margin-top-16 {
+  margin-top: 16px;
+}
+.marginLeft-16 {
+  margin-left: 16px;
+}
+.marginLeft-120 {
+  margin-left: 126px;
+}
