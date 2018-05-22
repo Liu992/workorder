@@ -8,3 +8,6 @@
 .table table th,td{
     height: 30px;
 }
+.table table span{
+    margin: 0 10px;
+}

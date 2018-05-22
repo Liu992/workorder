@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
-import './SiderDemo.less'
-import { Layout, Menu } from 'antd';
+import './SiderDemo.css'
+import { Layout } from 'antd';
 import ContentBox from '../Content';
-import { Route, Switch } from 'react-router-dom';
 import ManageSee from '../../view/ManageSee';
+import RouteInfo from '../RouteInfo';
+import { connect } from 'react-redux';
+import axios from 'axios';
 
 const { Header, Content } = Layout;
 
@@ -11,19 +13,39 @@ class SiderDemo extends Component {
   constructor (props) {
       super(props)
       this.state = {
-        collapsed: false
+        collapsed: false,
+        active: 'none',
+        username: '请登陆'
       }
   }
   onCollapse = (collapsed) => {
     console.log(collapsed);
     this.setState({ collapsed });
   }
-  
+  // 切换用户
+  toUser () {
+    this.setState({
+      active: this.state.active=='block'?'none':'block'
+    })
+  }
+  toLogin () {
+    axios.post('/promo/manage/workorder/logout')
+    .then(res => {
+      this.props.history.push('/login')
+    })
+  }
+  componentDidMount () {
+    if (window.localStorage.username) {
+      this.setState({
+        username: window.localStorage.username
+      })
+    }
+  }
   render() {    
-    console.log(this.props.history)
+    const {routes} = this.props;
+    let { active, username } = this.state;
     return (
       <Layout style={{ minHeight: '100vh' }}>
-        
         <Layout>
           <Header style={{ 
               height: '50px', 
@@ -35,22 +57,27 @@ class SiderDemo extends Component {
             }}>
             <span style={{color: '#fff'}}>工单管理</span>
             <div className="username">
-                <span style={{color: '#fff'}}>{window.localStorage.username?window.localStorage.username: '登陆'}</span>
+                <span onClick={this.toUser.bind(this)} style={{color: '#fff',cursor: 'pointer'}}>{username}</span>
+                <p style={{display: active}} onClick={this.toLogin.bind(this)}>退出登陆</p>
             </div>
           </Header>
           <Content style={{
             padding: 20,
             background: '#fff'
           }}>
-            <Switch>
-              <Route path="/manage/all" component={ManageSee}></Route>
-              <Route path="/manage/handle" component={ContentBox}></Route>
-            </Switch>
+              <RouteInfo routes={routes}></RouteInfo>
           </Content>
         </Layout>
       </Layout>
+      
     );
   }
 }
 
-export default SiderDemo
+let mapStateToProps = (state) => {
+  console.log(state)
+  return {
+
+  }
+}
+export default connect(mapStateToProps)(SiderDemo)
