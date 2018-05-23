@@ -20,30 +20,58 @@ class ContentBox extends Component {
       txtarea: '',
       previewVisible: false,
       previewImage: '',
-      fileList: [{
-        uid: -1,
-        name: 'xxx.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }],
+      fileList: [],
       data: '',
-      value: ''
+      value: '',
+      files: [],
+      unremove: true,
+      usernames: []
     }
   }
+  // 点击X关闭放大图
   handleCancel = () => {
     this.setState({
       previewVisible: false
     })
   }
+  // 点击放大图
   handlePreview = (file) => {
     this.setState({
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
     });
   }
-  handleChange = ({ fileList }) => {
+  // 上传图片
+  handleChange = ({file, fileList}) => {
+    let { files, unremove } = this.state
+    let newfiles = files;
+    if (unremove) {
+      if (file.response != undefined) {
+        newfiles.push(file.response.data)
+        this.setState({
+          files: newfiles,
+          unremove: true
+        })
+      } 
+    } else {
+      for (let i = 0; i < newfiles.length; i++) {
+        if (file.name == newfiles[i].oriFileName) {
+          newfiles.splice(i,1);
+          this.setState({
+            files: newfiles,
+            unremove: true
+          })
+        }
+      }
+    }
     this.setState({
       fileList
+    })
+  }
+  // 删除上传图片
+  changeRemove  (a) {
+    this.setState({
+      unremove: false
     })
   }
   componentDidMount() {
@@ -59,17 +87,27 @@ class ContentBox extends Component {
       .catch(err => {
         console.log(err)
       })
+
+    // 客服列表
+      axios.post('/promo/manage/workorder/getServices')
+      .then(res => {
+        this.setState({
+          usernames: res.data.data
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+   // 弹出框
+   showModal = () => {
+    this.setState({
+      visible: true,
+    });
   }
   // 转移
   transfer() {
-    let { id } = this.props.match.params;
-    axios.post('/promo/manage/workorder/transfer', {
-      workOrderId: id,
-      newServiceId: 2
-    })
-      .then(res => {
-        console.log(res)
-      })
+    this.showModal()
   }
   // 输入回复
   changeTxT(e) {
@@ -79,7 +117,7 @@ class ContentBox extends Component {
   }
   // 返回
   onGo() {
-    console.log(this.props.history)
+    this.props.history.go(-1)
   }
   // 提交
   subReply() {
@@ -87,10 +125,14 @@ class ContentBox extends Component {
     axios.post('/promo/manage/workorder/reply', {
       workOrderId: id,
       replyContent: this.state.txtarea,
-      files: this.state.fileList
+      files: this.state.files
     })
       .then(res => {
         console.log(res)
+        if (res.data.success) {
+          alert('提交成功')
+          this.props.history.push('/manage/all')
+        }
       })
       .catch(err => {
         console.log(err)
@@ -102,27 +144,39 @@ class ContentBox extends Component {
       value: value
     })
   }
-  // 点确认
+  // 点确认转移
   handleOk = (e) => {
     let { id } = this.props.match.params;
     axios.post('/promo/manage/workorder/transfer',{
       workOrderId: id,
       newServiceId: this.state.value
     })
+    .then(res => {
+      console.log(res)
+      if (res.data.success) {
+        this.props.history.push('/manage/all')
+      } else {
+        alert('转移失败')
+      }
+    })
     this.setState({
       visible: false,
     });
   }
-  // 点取消
-  handleCancel = (e) => {
+  // 点取消转移
+  handleCancel1 = (e) => {
     this.setState({
       visible: false,
     });
   }
   render() {
-    const { previewVisible, previewImage, fileList, data, txtarea } = this.state;
+    const { previewVisible, previewImage, fileList, data, txtarea, usernames } = this.state;
     let { txt, status } = this.props.location.state;
-    console.log(data)
+    let record = []
+    if (data.serviceHistory != undefined) {
+      record = JSON.parse(data.serviceHistory)
+    }
+    
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -163,13 +217,22 @@ class ContentBox extends Component {
             onChange={this.changeTxT.bind(this)}
             value={txtarea} />
         </div>
+        <div className="box3">
+          <p><span>转移记录：</span>
+            {
+              record.map((item, ind) => {
+                return <span key={ind}>{ind>0? ' >> ':''}{item}</span>
+              })
+            }
+          </p>
+        </div>
         <div className="engineerReply" style={{ display: txt == '处理' ? 'none' : '' }}>
           <h3>工程师回复：</h3>
           <p>{data.replyContent}</p>
           <div className="imgs">
             {
               data.serviceFiles != undefined && data.serviceFiles.map((item, ind) => {
-                return <img src={item.filePath} key={ind} alt="" />
+                return item.isImg?<img src={`/promo/upload/${item.filePath}`} key={ind} alt="" />:<a target="_blank" href={`/promo/upload/${item.filePath}`} key={ind}>{item.oriFileName}</a>
               })
             }
           </div>
@@ -178,13 +241,14 @@ class ContentBox extends Component {
           <span>附件：</span>
           <div className="upload">
             <Upload
-              action="//jsonplaceholder.typicode.com/posts/"
+              action="/promo/workorder/upload"
               listType="picture-card"
               fileList={fileList}
               onPreview={this.handlePreview}
               onChange={this.handleChange}
+              onRemove={this.changeRemove.bind(this)}
             >
-              {fileList.length >= 3 ? null : uploadButton}
+              {fileList.length >= 5 ? null : uploadButton}
             </Upload>
             <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel} style={{ display: 'flex' }}>
               <img alt="example" style={{ width: '100%' }} src={previewImage} />
@@ -196,7 +260,7 @@ class ContentBox extends Component {
         }
         {
           txt == '处理' ? <div className="btn">
-            <button>取消</button>
+            <button onClick={this.onGo.bind(this)}>取消</button>
             <button onClick={this.subReply.bind(this)}>提交</button>
             <button onClick={this.transfer.bind(this)}>转移</button>
           </div> : <div className="btn">
@@ -207,7 +271,7 @@ class ContentBox extends Component {
           title={'转移'}
           visible={this.state.visible}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
+          onCancel={this.handleCancel1}
           mask={false}
           width='320px'
           cancelText="取消"
@@ -216,9 +280,12 @@ class ContentBox extends Component {
           style={{ textAlign: 'center' }}
         >
           {
-            <Select defaultValue="1" style={{ width: 150 }} onChange={this.handleChange2.bind(this)}>
-              <Option value="1">s1</Option>
-              <Option value="2">s2</Option>
+            <Select defaultValue="" style={{ width: 150 }} onChange={this.handleChange2.bind(this)}>
+              {
+                usernames.map((item, ind) => {
+                  return <Option key={item.id} value={item.id}>{item.nickname}</Option>
+                })
+              }
             </Select>
           }
         </Modal>

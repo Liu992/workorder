@@ -134,20 +134,17 @@ class ManageSee extends Component {
     })
   }
   reload1(){
+    console.log(this.state.pagenum)
     axios.post('/promo/manage/workorder/list', {
-      pageIndex: this.state.pageNumber,
+      pageIndex: this.state.pagenum,
       pageSize: 10
     })
     .then(res => {
       this.props.dispatch(workorderlistActiom(res.data.data.rows))
-      if (unlogin(res)) {
-        this.setState({
-          workorderlist: res.data.data.rows,
-          allLen: res.data.data.count
-        })
-      } else {
-        this.props.history.push('/login')
-      }
+      this.setState({
+        workorderlist: res.data.data.rows,
+        allLen: res.data.data.count
+      })
     })
     .catch(err => {
       console.log(err)
@@ -157,9 +154,11 @@ class ManageSee extends Component {
   search () {
     let {on} = this.state;
     this.setState({
-      on: !on
+      on: true,
+      pagenum:1
+    }, () => {
+      this.reload()
     })
-    this.reload()
   }
   changeVal1 (e) {
     this.setState({
@@ -215,7 +214,7 @@ class ManageSee extends Component {
             <DatePicker
               disabledDate={this.disabledStartDate}
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={startValue}
               placeholder=""
               onChange={this.onStartChange}
@@ -228,7 +227,7 @@ class ManageSee extends Component {
             <DatePicker
               disabledDate={this.disabledEndDate}
               showTime
-              format="YYYY-MM-DD HH:mm:ss"
+              format="YYYY-MM-DD"
               value={endValue}
               placeholder=""
               onChange={this.onEndChange}

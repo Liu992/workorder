@@ -30,9 +30,14 @@
 .content-box .box2 p span:nth-child(2){
     display: inline-block;
     width: 140px;
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .content-box .box2 p {
     margin-right: 20px;
+    display: flex;
+    align-items: center;
 }
 .content-box .box3 p span:first-child{
     display: inline-block;
@@ -51,11 +56,12 @@
 .content-box .customerAttachment .imgs{
     
 }
-.content-box .customerAttachment .imgs img{
+.content-box .customerAttachment .imgs img,a{
     width: 80px;
     height: 80px;
     border: 1px solid #ccc;
     margin-right: 10px;
+    text-align: center;
 }
 /* 工程师附件 */
 .content-box .engineerAttachment{

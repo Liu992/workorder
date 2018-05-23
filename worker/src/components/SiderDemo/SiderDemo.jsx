@@ -74,10 +74,4 @@ class SiderDemo extends Component {
   }
 }
 
-let mapStateToProps = (state) => {
-  console.log(state)
-  return {
-
-  }
-}
-export default connect(mapStateToProps)(SiderDemo)
+export default connect()(SiderDemo)
