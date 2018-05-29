@@ -54,12 +54,18 @@
     width: 80px;
 }
 .content-box .customerAttachment .imgs{
-    
+    display: flex;
 }
-.content-box .customerAttachment .imgs img,a{
+.content-box .customerAttachment .imgs img{
+    display: block;
     width: 80px;
     height: 80px;
-    border: 1px solid #ccc;
+}
+.content-box .customerAttachment .imgs a{
+    display: block;
+    width: 80px;
+    height: 80px;
+    /* border: 1px solid #ccc; */
     margin-right: 10px;
     text-align: center;
 }
@@ -74,13 +80,10 @@
 .content-box .engineerAttachment .upload>span{
     display: flex;
 }
-.content-box .engineerAttachment .imgs{
-    
-}
 .content-box .engineerAttachment .imgs img{
     width: 80px;
     height: 80px;
-    border: 1px solid #ccc;
+    /* border: 1px solid #ccc; */
 }
 /* 工程师回复 */
 .content-box .engineerReply{
@@ -98,6 +101,12 @@
     margin-left: 80px;
 }   
 .content-box .engineerReply .imgs img{
+    display: block;
+    width: 80px;
+    height: 80px;
+}
+.content-box .engineerReply .imgs a{
+    display: block;
     width: 80px;
     height: 80px;
     border: 1px solid #ccc;

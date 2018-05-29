@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import './Content.css';
-import { Input, Upload, Icon, Modal, Select } from 'antd';
+import { Input, Upload, Icon, Modal, Select, message } from 'antd';
 import axios from 'axios';
 import { connect } from 'react-redux'
 const { TextArea } = Input;
@@ -169,6 +169,14 @@ class ContentBox extends Component {
       visible: false,
     });
   }
+  beforeUpload(file) {
+    const isLt3M = file.size / 1024 / 1024 < 3;
+    if (!isLt3M) {
+      message.error('上传文件不能大于3M');
+    }
+    console.log(isLt3M)
+    return isLt3M;
+  }
   render() {
     const { previewVisible, previewImage, fileList, data, txtarea, usernames } = this.state;
     let { txt, status } = this.props.location.state;
@@ -176,7 +184,6 @@ class ContentBox extends Component {
     if (data.serviceHistory != undefined) {
       record = JSON.parse(data.serviceHistory)
     }
-    
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -204,7 +211,7 @@ class ContentBox extends Component {
             {
               data.userFiles && data.userFiles.map((item, ind) => {
                 return (
-                  <img key={ind} src={`/promo/upload/${item.filePath}`} alt="" />
+                  <a key={ind} target="_blank" href={`/promo/upload/${item.filePath}`}><img src={`/promo/upload/${item.filePath}`} alt="" /></a>
                 )
               })
             }
@@ -232,7 +239,7 @@ class ContentBox extends Component {
           <div className="imgs">
             {
               data.serviceFiles != undefined && data.serviceFiles.map((item, ind) => {
-                return item.isImg?<img src={`/promo/upload/${item.filePath}`} key={ind} alt="" />:<a target="_blank" href={`/promo/upload/${item.filePath}`} key={ind}>{item.oriFileName}</a>
+                return item.isImg?<a target="_blank" href={`/promo/upload/${item.filePath}`} key={ind}><img src={`/promo/upload/${item.filePath}`} alt="" /></a>:<a target="_blank" href={`/promo/upload/${item.filePath}`} key={ind}>{item.oriFileName}</a>
               })
             }
           </div>
@@ -247,6 +254,7 @@ class ContentBox extends Component {
               onPreview={this.handlePreview}
               onChange={this.handleChange}
               onRemove={this.changeRemove.bind(this)}
+              beforeUpload={this.beforeUpload }
             >
               {fileList.length >= 5 ? null : uploadButton}
             </Upload>

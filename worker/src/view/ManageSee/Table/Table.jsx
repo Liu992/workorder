@@ -53,7 +53,7 @@ class TableBox extends Component {
         this.setState({
           txt: '关闭'
         })
-        this.closeOrder()
+        
         return this.showModal()
       break;
       case '更改状态':
